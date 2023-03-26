@@ -12,13 +12,13 @@ const theatreSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
-       
+
     },
-    city :{
+    city: {
         type: String,
         required: true
     },
-    pinCode : {
+    pinCode: {
         type: Number,
         required: true
     },
@@ -35,13 +35,13 @@ const theatreSchema = new mongoose.Schema({
         default: () => {
             return Date.now();
         }
+    },
+    movies: {
+        type: [mongoose.SchemaTypes.ObjectId],
+        ref: "Movie"
     }
-
-},{
+}, {
     //versionKey: false // this will remove the __v field, which indicates the internal revision of the document
 })
-
-
-
 
 module.exports = mongoose.model("Theatre", theatreSchema);
