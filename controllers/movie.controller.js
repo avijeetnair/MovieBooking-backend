@@ -66,7 +66,7 @@ exports.updateMovie = async (req, res) => {
     savedMovie.posterUrl = req.body.posterUrl != undefined ? req.body.posterUrl : savedMovie.posterUrl
     savedMovie.language = req.body.language != undefined ? req.body.language : savedMovie.language
     savedMovie.releaseDate = req.body.releaseDate != undefined ? req.body.releaseDate : savedMovie.releaseDate
-    savedMovie.releaseSatus = req.body.releaseSatus != undefined ? req.body.releaseSatus : savedMovie.releaseSatus
+    savedMovie.releaseStatus = req.body.releaseStatus != undefined ? req.body.releaseSatus : savedMovie.releaseSatus
 
     try {
         var updatedMovie = await savedMovie.save();
