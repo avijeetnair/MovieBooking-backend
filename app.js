@@ -5,6 +5,8 @@ const mongoose = require('mongoose')
 const dbConfig = require('./configs/db.config')
 const Movie = require('./models/movie.model')
 const Theatre = require('./models/theatre.model')
+const User = require('./models/user.model')
+const bcrypt = require('bcryptjs')
 
 // Initializing express
 const app = express()
@@ -30,7 +32,6 @@ mongoose.connect(dbConfig.DB_URL)
 .catch(function (err){
     console.lof("Error: ", err.message)
 })
-
 
 /**
  * This function will initialize the state of the 
@@ -149,6 +150,22 @@ async function init() {
     } catch (e) {
         console.error(e.message)
     }
+
+    try {
+        await User.collection.drop()
+
+        const user = await User.create({
+            name: 'Avijeet',
+            userId: 'admin',
+            email: 'avijeetnair.avj@gmail.com',
+            userType: 'ADMIN',
+            password: bcrypt.hashSync('Welcome', 8)
+        })
+
+        console.log('Admin user created')
+    } catch (e) {
+        console.log(e.message)
+    }
 }
 
 /**
@@ -156,6 +173,8 @@ async function init() {
  */
 require('./routes/movie.routes')(app)
 require('./routes/theatre.routes')(app)
+require('./routes/auth.routes')(app)
+require('./routes/user.routes')(app)
 
 app.listen(serverConfig.PORT, () => {
     console.log(`Application started on the port num: ${serverConfig.PORT}`)
