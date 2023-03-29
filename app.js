@@ -7,6 +7,7 @@ const Movie = require('./models/movie.model')
 const Theatre = require('./models/theatre.model')
 const User = require('./models/user.model')
 const bcrypt = require('bcryptjs')
+const constants = require('./utils/constants')
 
 // Initializing express
 const app = express()
@@ -16,22 +17,23 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 /**
- * DB Connection initialization
- */
+* DB Connection initialization
+*/
 /*mongoose.connect(dbConfig.DB_URL, () => {
-    console.log('connected to Mongo DB')
-    init();
+   console.log('connected to Mongo DB')
+   init();
 }, err => {
-    console.log("Error: ", err.message)
+   console.log("Error: ", err.message)
 })*/
 mongoose.connect(dbConfig.DB_URL)
 .then(function(){
-    console.log('Connected to Mongo DB!')
-    init();
+   console.log('Connected to Mongo DB!')
+   init();
 })
 .catch(function (err){
-    console.lof("Error: ", err.message)
+   console.lof("Error: ", err.message)
 })
+
 
 /**
  * This function will initialize the state of the 
@@ -157,12 +159,27 @@ async function init() {
         const user = await User.create({
             name: 'Avijeet',
             userId: 'admin',
-            email: 'avijeetnair.avj@gmail.com',
+            email: 'avijeet@gmail.com',
             userType: 'ADMIN',
             password: bcrypt.hashSync('Welcome', 8)
         })
 
         console.log('Admin user created')
+    } catch (e) {
+        console.log(e.message)
+    }
+
+    try {
+
+        const user = await User.create({
+            name: 'Priyanka',
+            userId: 'customer',
+            email: 'priyanka@gmail.com',
+            userType: constants.userTypes.customer,
+            password: bcrypt.hashSync('Welcome', 8)
+        })
+
+        console.log('Customer user created')
     } catch (e) {
         console.log(e.message)
     }
