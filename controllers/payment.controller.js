@@ -1,12 +1,8 @@
 const Booking = require("../models/booking.model")
-const Payment = require("../models/payment.model")
-
-/**
- * Get the list of all the payments.
- * ADMIN user should get the list of all the payments
- * Customer user should get the list of all his/her payments
- */
-
+const Payment = require("../models/payment.model");
+const User = require("../models/user.model");
+const { sendEmail } = require("../utils/NotificationClient");
+const constants = require('../utils/constants')
 exports.getAllPayments = async (req, res) => {
 
     const queryObj = {}
@@ -32,10 +28,6 @@ exports.getAllPayments = async (req, res) => {
 
 }
 
-/**
- * Get the payment details based on the payment id
- */
-
 exports.getPaymentById = async (req, res) => {
     try {
         const payments = await Payment.findOne({ _id: req.params.id });
@@ -48,10 +40,6 @@ exports.getPaymentById = async (req, res) => {
     }
 
 }
-
-/**
- * Create a payment
- */
 
 exports.createPayment = async (req, res) => {
 
@@ -85,6 +73,12 @@ exports.createPayment = async (req, res) => {
          */
         booking.status = constants.bookingStatus.completed;
         await booking.save();
+
+        const user = await User.findOne({ "userId": req.userId })
+        sendEmail(payment._id, "Payment successful for the booking id: "
+            + req.body.bookingId, JSON.stringify(booking), user.email,
+            "mba-no-reply@mba.com")
+
         return res.status(201).send(payment);
     } catch (err) {
         console.log(err);
