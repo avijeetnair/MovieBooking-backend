@@ -2,6 +2,7 @@ const Theatre = require('../models/theatre.model')
 const Movie = require('../models/movie.model');
 const userModel = require('../models/user.model');
 const { sendEmail } = require('../utils/NotificationClient');
+const constants = require('../utils/constants');
 
 exports.createTheatre = async (req, res) => {
     const theatreObject = {
@@ -40,6 +41,10 @@ exports.getAllTheatres = async (req, res) => {
     }
 
     try {
+        let user = await userModel.findOne({userId: req.userId});
+        if(user.userType == constants.userTypes.client)
+            queryObj.ownerId = user._id
+        //find only the theatres which have the owner as logged in
         let theatres = await Theatre.find(queryObj);
         if (req.query.movieId != undefined) {
             theatres = theatres.filter(
